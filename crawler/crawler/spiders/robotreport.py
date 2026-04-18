@@ -1,3 +1,4 @@
+import csv
 from playwright.sync_api import sync_playwright
 
 URL = "https://www.therobotreport.com/category/markets-industries/biotechnology-medical-healthcare/"
@@ -5,7 +6,7 @@ URL = "https://www.therobotreport.com/category/markets-industries/biotechnology-
 with sync_playwright() as p:
     
     browser = p.chromium.launch(
-        channel="msedge",   # 🔥 使用 Microsoft Edge
+        channel="chrome",   # 🔥 使用 Microsoft Edge
         headless=False,
         slow_mo=100,
         args=["--disable-blink-features=AutomationControlled"]
@@ -16,35 +17,42 @@ with sync_playwright() as p:
 
     page = context.new_page()
 
-    for page_num in range (1,3):
-        current_URL = URL + '/page/' + str(page_num)
+    # 開啟CSV檔案
+    with open('robot_report.csv', mode='w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Title', 'URL'])
 
-        page.goto(current_URL)
+        for page_num in range (1,50):
+            current_URL = URL + '/page/' + str(page_num)
 
-    # print(page.title())
-        if page_num == 1:
-            input("完成驗證後按 Enter...")
+            page.goto(current_URL)
 
-    # 🔥 等真正內容出現（關鍵）
-        page.wait_for_selector("article", timeout=20000)
+        # print(page.title())
+            if page_num == 1:
+                input("完成驗證後按 Enter...")
 
-        # 🔥 再給 JS 一點時間 render
-        page.wait_for_timeout(3000)
+        # 🔥 等真正內容出現（關鍵）
+            page.wait_for_selector("article", timeout=20000)
+
+            # 🔥 再給 JS 一點時間 render
+            page.wait_for_timeout(3000)
 
 
-        links = page.locator('a.entry-title-link[rel="bookmark"]')
+            links = page.locator('a.entry-title-link[rel="bookmark"]')
 
-        for i in range(links.count()):
+            for i in range(links.count()):
 
-            link = links.nth(i)
+                link = links.nth(i)
 
-            text = link.inner_text().strip()
+                text = link.inner_text().strip()
 
-            href = link.get_attribute("href")
+                href = link.get_attribute("href")
 
-            if text:
+                if text:
 
-                print(f"Text: {text} | URL: {href}")
+                    print(f"Text: {text} | URL: {href}")
+                    #將每筆資料寫入csv
+                    writer.writerow([text, href])
 
     # html = page.content()
     # print(html[:1000])
