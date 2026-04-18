@@ -1,6 +1,13 @@
+# Python
+venv/
 __pycache__/
 *.pyc
-.env
-.DS_Store
-.ipynb_checkpoints/
-data/raw/
+
+# runtime / crawler outputs
+state.json
+*.csv
+*.json
+
+# but keep important structure files
+!requirements.txt
+!README.md
