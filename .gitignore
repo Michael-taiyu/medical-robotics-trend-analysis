@@ -1,5 +1,6 @@
 # Python
 venv/
+.venv/
 __pycache__/
 *.pyc
 
@@ -11,3 +12,8 @@ state.json
 # but keep important structure files
 !requirements.txt
 !README.md
+
+# 排除爬蟲暫存的文字檔與產出的報告 (只傳程式碼，不傳資料)
+article_txts/
+*.md
+*.txt
